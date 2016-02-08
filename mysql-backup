@@ -634,7 +634,7 @@ function do_dump_backup() {
 
 
 function check_for_locked_queries() {
-    locked=$(${mysql_cli} --socket="${socket}" -e 'SELECT * FROM information_schema.PROCESSLIST WHERE DB IS NOT NULL AND TIME > 10' | wc -l)
+    locked=$(${mysql_cli} --socket="${socket}" -e 'SELECT * FROM information_schema.PROCESSLIST WHERE DB IS NOT NULL AND COMMAND != "Sleep" AND TIME > 10' | wc -l)
     if test ${locked} -gt 0; then
 	msg="ERROR ${locked} locked queries"
 	log ${msg}
