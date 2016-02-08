@@ -615,7 +615,10 @@ function do_dump_backup() {
     logs_files=""
     get_logs_dir
     for d in $RET '*.info' 'show-*-status'; do
-	logs_files="${logs_files} $d*";
+      ls ${TARGET_MOUNT}/${datadir_path}${d}* > /dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        logs_files="${logs_files} ${d}*"
+      fi
     done
     get_backup_file "__logs"
     backup_file=${RET}
