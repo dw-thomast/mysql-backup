@@ -493,7 +493,7 @@ function stop_mysqld_for_backup() {
 	if test $ec -ne 0; then
 	    log "mysql seems to be shut (ec=$ec), checking pid ($pid)..."
 	    for j in `seq 120`; do
-		cmd "ps -p $pid"
+		cmd "ps -p $pid > /dev/null 2>&1"
 		ec=$?
 		if test $ec -ne 0; then
 		    log "mysql pid $pid not found. This is good, backup can start."
