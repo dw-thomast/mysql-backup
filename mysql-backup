@@ -667,8 +667,8 @@ function do_backup () {
     if test -n "${cli_dump}"; then
 	start_mysqld_for_backup
 	command=dump
-	do_dump_backup
 	build_compression_cli
+	do_dump_backup
 	stop_mysqld_for_backup
     fi
 
