@@ -39,3 +39,6 @@ skip_column_names=1
 quote_names=1
 opt=1
 add_drop_database=1
+
+# by default, there is no replication
+replication_slave=0
