@@ -40,5 +40,8 @@ quote_names=1
 opt=1
 add_drop_database=1
 
+defaults_file=/etc/mysql/my.cnf
+socket=/var/run/mysqld/mysqld.sock
+
 # by default, there is no replication
 replication_slave=0
