@@ -382,7 +382,8 @@ EOF
     
     run_hook pre_snapshot_backup_lvm_snaphost_hook
 
-    mysql_query=$(cat <<EOF
+    if [ ${replication_slave} -eq 1 ]; then
+      mysql_query=$(cat <<EOF
 SLAVE STOP;
 FLUSH TABLES WITH READ LOCK;
 system ${mysql_cli} --socket="${socket}" --column-names -e "SHOW MASTER STATUS\G" > ${datadir}/show-master-status
@@ -391,7 +392,17 @@ system ${lvcreate} -s --size ${LVM_SNAPSHOT_SIZE} -n ${lvm_snapshot} ${LVCREATE_
 UNLOCK TABLES;
 SLAVE START;
 EOF
-    )
+      )
+    else # Not a replication
+      mysql_query=$(cat <<EOF
+FLUSH TABLES WITH READ LOCK;
+system ${mysql_cli} --socket="${socket}" --column-names -e "SHOW MASTER STATUS\G" > ${datadir}/show-master-status
+system ${mysql_cli} --socket="${socket}" --column-names -e "SHOW SLAVE STATUS\G" > ${datadir}/show-slave-status
+system ${lvcreate} -s --size ${LVM_SNAPSHOT_SIZE} -n ${lvm_snapshot} ${LVCREATE_OPTS} ${datadir_dev} > /dev/null 2>&1
+UNLOCK TABLES;
+EOF
+      )
+    fi
 
     cmd "echo '${mysql_query}' | ${mysql_cli} --socket=\"${socket}\""
     run_hook post_snapshot_backup_lvm_snaphost_hook
